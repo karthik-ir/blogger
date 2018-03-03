@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ import com.typeset.blogger.CommentRequest;
 import com.typeset.blogger.NotFoundException;
 import com.typeset.blogger.api.model.BlogResponse;
 import com.typeset.blogger.api.model.CommentResponse;
+import com.typeset.blogger.api.model.PagedBlogResponse;
 import com.typeset.blogger.api.model.ParagraphResponse;
 import com.typeset.blogger.model.Blog;
 import com.typeset.blogger.model.Comment;
@@ -77,7 +79,7 @@ public class BlogServiceImpl implements BlogService {
 		Comment comment = new Comment(request.getComment(), paragraph);
 		Comment result = commentRepository.save(comment);
 
-		//Build Response
+		// Build Response
 		CommentResponse commentResponse = new CommentResponse();
 		commentResponse.setId(result.getId());
 		commentResponse.setData(request.getComment());
@@ -87,15 +89,50 @@ public class BlogServiceImpl implements BlogService {
 	}
 
 	@Override
-	public BlogResponse getAllBlogs(Pageable pageable) {
+	public PagedBlogResponse getAllBlogs(Pageable pageable) {
 
-		return null;
+		Page<Blog> blogs = blogRepository.findAll(pageable);
+
+		// Build response
+		PagedBlogResponse pagedBlogs = new PagedBlogResponse();
+		pagedBlogs.setBlogs(blogs.getContent().stream().map(x -> {
+			BlogResponse br = new BlogResponse();
+			br.setId(x.getId());
+			br.setTitle(x.getTitle());
+			return br;
+		}).collect(Collectors.toList()));
+		pagedBlogs.setTotalElements(blogs.getTotalElements());
+		pagedBlogs.setTotalPages(blogs.getTotalPages());
+
+		return pagedBlogs;
 	}
 
 	@Override
-	public BlogResponse getBlogById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public BlogResponse getBlogById(Long id) throws NotFoundException {
+		Blog result = blogRepository.findById(id);
+		if (result == null) {
+			throw new NotFoundException("Blog with id : " + id + " not found");
+		}
+		BlogResponse response = new BlogResponse();
+		response.setId(result.getId());
+		response.setTitle(result.getTitle());
+		response.setCreatedDate(result.getDateTime());
+		List<ParagraphResponse> paragraphs = result.getParagraphs().stream().map(x -> {
+			ParagraphResponse paragraphResponse = new ParagraphResponse();
+			paragraphResponse.setData(x.getData());
+			paragraphResponse.setId(x.getId());
+			List<CommentResponse> comments = x.getComments().stream().map(y -> {
+				CommentResponse cr = new CommentResponse();
+				cr.setData(y.getData());
+				cr.setId(y.getId());
+				cr.setDate(y.getDate());
+				return cr;
+			}).collect(Collectors.toList());
+			paragraphResponse.setComments(comments);
+			return paragraphResponse;
+		}).collect(Collectors.toList());
+		response.setParagraphs(paragraphs);
+		return response;
 	}
 
 }

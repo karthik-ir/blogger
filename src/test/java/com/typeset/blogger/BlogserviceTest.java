@@ -46,17 +46,22 @@ public class BlogserviceTest {
 	/**
 	 * Test method for
 	 * {@link com.typeset.blogger.service.BlogServiceImpl#createBlog(com.typeset.blogger.BlogRequest)}.
+	 * 
+	 * @throws NotFoundException
 	 */
 	@Test
-	public void testCreateBlogWithTwoParagraph() {
+	public void testCreateBlogWithTwoParagraph() throws NotFoundException {
 		BlogRequest blogRequest = new BlogRequest();
 		blogRequest.setTitle("First");
 		blogRequest.setParagraphs("hello\n\n world");
 		BlogResponse result = blogService.createBlog(blogRequest);
-		Blog getOne = blogRepository.findOne(result.getId());
-		List<Paragraph> paragraphs = paragraphRepository.findByBlogId(result.getId());
-		assertEquals(paragraphs.size(), 2);
-		assertTrue(getOne.getTitle().equals("First"));
+
+		result = blogService.getBlogById(result.getId());
+		// Blog getOne = blogRepository.findOne(result.getId());
+		// List<Paragraph> paragraphs =
+		// paragraphRepository.findByBlogId(result.getId());
+		assertEquals(result.getParagraphs().size(), 2);
+		assertTrue(result.getTitle().equals("First"));
 	}
 
 	@Test
@@ -67,7 +72,7 @@ public class BlogserviceTest {
 		BlogResponse result = blogService.createBlog(blogRequest);
 
 		Blog getOne = blogRepository.findOne(result.getId());
-		
+
 		List<Paragraph> paragraphs = paragraphRepository.findByBlogId(result.getId());
 		assertEquals(paragraphs.size(), 1);
 		assertTrue(getOne.getTitle().equals("First"));
@@ -80,10 +85,10 @@ public class BlogserviceTest {
 		BlogResponse result = blogService.createBlog(blogRequest);
 
 		Blog getOne = blogRepository.findOne(result.getId());
-		
+
 		List<Paragraph> paragraphs = paragraphRepository.findByBlogId(result.getId());
 		assertEquals(paragraphs.size(), 0);
-		
+
 		assertTrue(getOne.getTitle().equals("First"));
 	}
 
@@ -102,7 +107,7 @@ public class BlogserviceTest {
 
 		Blog getOne = blogRepository.findOne(result.getId());
 		List<Paragraph> findAll = paragraphRepository.findAll();
-		
+
 		List<Paragraph> paragraphs = paragraphRepository.findByBlogId(result.getId());
 		assertEquals(paragraphs.size(), 2);
 
@@ -112,24 +117,24 @@ public class BlogserviceTest {
 		request.setComment("MYFIRST COMMENT");
 		request.setParagraphId(findAll.get(0).getId());
 		blogService.createComment(request);
-		
+
 		List<Comment> comments = commentRepository.findByParagraphId(findAll.get(0).getId());
 		assertEquals(comments.size(), 1);
-		
+
 		request.setComment("MYSECOND COMMENT");
 		request.setParagraphId(findAll.get(1).getId());
 		blogService.createComment(request);
-		
+
 		comments = commentRepository.findByParagraphId(findAll.get(1).getId());
 		assertEquals(comments.size(), 1);
 
 		request.setComment("MYTHIRDCOMMENT");
 		request.setParagraphId(findAll.get(0).getId());
 		blogService.createComment(request);
-		
+
 		comments = commentRepository.findByParagraphId(findAll.get(0).getId());
 		assertEquals(comments.size(), 2);
-		
+
 	}
 
 	@Test(expected = NotFoundException.class)

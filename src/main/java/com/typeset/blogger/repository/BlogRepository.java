@@ -3,6 +3,7 @@
  */
 package com.typeset.blogger.repository;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,5 +16,6 @@ import com.typeset.blogger.model.Blog;
 @Repository
 public interface BlogRepository extends PagingAndSortingRepository<Blog, Long> {
 
-	
+	@Query("select b from Blog b join fetch b.paragraphs p where b.id=?1 ")
+	Blog findById(Long id);
 }

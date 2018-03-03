@@ -11,6 +11,10 @@ public class BlogRequest {
 	String title;
 	String paragraphs;
 
+	public BlogRequest() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	public String getTitle() {
 		return title;
 	}
