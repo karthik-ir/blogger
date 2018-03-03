@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -99,11 +100,14 @@ public class BlogServiceImpl implements BlogService {
 			BlogResponse br = new BlogResponse();
 			br.setId(x.getId());
 			br.setTitle(x.getTitle());
+
+			br.setParagraphs(x.getParagraphs().stream().map(para -> {
+				return new ParagraphResponse(para.getId(), para.getData());
+			}).collect(Collectors.toList()));
 			return br;
 		}).collect(Collectors.toList()));
 		pagedBlogs.setTotalElements(blogs.getTotalElements());
 		pagedBlogs.setTotalPages(blogs.getTotalPages());
-
 		return pagedBlogs;
 	}
 
@@ -113,26 +117,35 @@ public class BlogServiceImpl implements BlogService {
 		if (result == null) {
 			throw new NotFoundException("Blog with id : " + id + " not found");
 		}
+		List<Long> paragraphIds = result.getParagraphs().stream().map(x -> {
+			return x.getId();
+		}).collect(Collectors.toList());
+		List<Comment> comments = commentRepository.findByParagraphIdIn(paragraphIds);
+
 		BlogResponse response = new BlogResponse();
 		response.setId(result.getId());
 		response.setTitle(result.getTitle());
 		response.setCreatedDate(result.getDateTime());
+
 		List<ParagraphResponse> paragraphs = result.getParagraphs().stream().map(x -> {
 			ParagraphResponse paragraphResponse = new ParagraphResponse();
 			paragraphResponse.setData(x.getData());
 			paragraphResponse.setId(x.getId());
-			List<CommentResponse> comments = x.getComments().stream().map(y -> {
+			Stream<Comment> filteredcomments = comments.stream().filter(comment -> {
+				return comment.getParagraph().getId() == x.getId();
+			});
+
+			List<CommentResponse> crs = filteredcomments.map(y -> {
 				CommentResponse cr = new CommentResponse();
 				cr.setData(y.getData());
 				cr.setId(y.getId());
 				cr.setDate(y.getDate());
 				return cr;
 			}).collect(Collectors.toList());
-			paragraphResponse.setComments(comments);
+			paragraphResponse.setComments(crs);
 			return paragraphResponse;
 		}).collect(Collectors.toList());
 		response.setParagraphs(paragraphs);
 		return response;
 	}
-
 }

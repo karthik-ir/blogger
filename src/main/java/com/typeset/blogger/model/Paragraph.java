@@ -33,7 +33,7 @@ public class Paragraph {
 	@JoinColumn(name = "blog_id", nullable = false)
 	private Blog blog;
 
-	@OneToMany(mappedBy = "paragraph",fetch= FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "paragraph",fetch= FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Comment> comments = new ArrayList<>();
 
 	public Paragraph() {

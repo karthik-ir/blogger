@@ -18,4 +18,6 @@ import com.typeset.blogger.model.Comment;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
 	List<Comment> findByParagraphId(Long id);
+
+	List<Comment> findByParagraphIdIn(Iterable<Long> ids);
 }

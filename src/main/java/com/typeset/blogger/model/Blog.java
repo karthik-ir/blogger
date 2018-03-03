@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,7 +40,7 @@ public class Blog {
 		this.dateTime = new Date();
 	}
 
-	@OneToMany(mappedBy = "blog", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "blog",fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<Paragraph> paragraphs = new ArrayList<>();
 
 	public Date getDateTime() {

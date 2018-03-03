@@ -16,6 +16,6 @@ import com.typeset.blogger.model.Blog;
 @Repository
 public interface BlogRepository extends PagingAndSortingRepository<Blog, Long> {
 
-	@Query("select b from Blog b join fetch b.paragraphs p where b.id=?1 ")
+//	@Query("select b from Blog b fetch b.paragraphs.comments p where b.id=?1 ")
 	Blog findById(Long id);
 }
