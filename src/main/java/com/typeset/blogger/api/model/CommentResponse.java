@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.typeset.blogger;
+package com.typeset.blogger.api.model;
 
 import java.util.Date;
 
@@ -14,6 +14,7 @@ public class CommentResponse {
 	private Long id;
 	private String data;
 	private Date date;
+	private Long paragraphId;
 
 	public Long getId() {
 		return id;
@@ -37,6 +38,14 @@ public class CommentResponse {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public Long getParagraphId() {
+		return paragraphId;
+	}
+
+	public void setParagraphId(Long paragraphId) {
+		this.paragraphId = paragraphId;
 	}
 
 }

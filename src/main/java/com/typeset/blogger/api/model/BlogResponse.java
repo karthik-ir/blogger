@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.typeset.blogger;
+package com.typeset.blogger.api.model;
 
 import java.util.Date;
 import java.util.List;

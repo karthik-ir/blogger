@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.typeset.blogger;
+package com.typeset.blogger.api.model;
 
 import java.util.List;
 
@@ -12,8 +12,18 @@ import java.util.List;
 public class ParagraphResponse {
 
 	private Long id;
-	private Long data;
+	private String data;
 	private List<CommentResponse> comments;
+
+	public ParagraphResponse() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public ParagraphResponse(Long id, String data) {
+		super();
+		this.id = id;
+		this.data = data;
+	}
 
 	public Long getId() {
 		return id;
@@ -23,11 +33,11 @@ public class ParagraphResponse {
 		this.id = id;
 	}
 
-	public Long getData() {
+	public String getData() {
 		return data;
 	}
 
-	public void setData(Long data) {
+	public void setData(String data) {
 		this.data = data;
 	}
 

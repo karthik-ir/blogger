@@ -15,4 +15,5 @@ import com.typeset.blogger.model.Blog;
 @Repository
 public interface BlogRepository extends PagingAndSortingRepository<Blog, Long> {
 
+	
 }

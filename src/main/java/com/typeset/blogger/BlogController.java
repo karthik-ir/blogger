@@ -47,7 +47,7 @@ public class BlogController {
 
 	@RequestMapping(value = "/blog", method = RequestMethod.GET, produces = "application/json")
 	public Page<Blog> getBlogs(Pageable pageable) {
-		return blogService.getAllBlogs(pageable);
+		return null;// blogService.getAllBlogs(pageable);
 
 	}
 

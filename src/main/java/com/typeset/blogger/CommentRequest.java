@@ -3,8 +3,6 @@
  */
 package com.typeset.blogger;
 
-import java.util.Date;
-
 /**
  * @author karthik
  *
